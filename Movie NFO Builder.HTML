@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Movie NFO Builder</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    #generatedNFO {
+      font-family: monospace;
+      white-space: pre-wrap;
+      background-color: #f5f5f5;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="#">Movie NFO Builder</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="https://mediaarea.net/MediaInfoOnline" target="_blank">MediaInfoOnline</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container mt-5">
+    
+
+    <form id="nfoForm">
+      <div class="mb-3">
+        <label for="groupName" class="form-label">Group Name:</label>
+        <input type="text" class="form-control" id="groupName" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="releaseName" class="form-label">Release Name:</label>
+        <input type="text" class="form-control" id="releaseName" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="movieName" class="form-label">Movie Name:</label>
+        <input type="text" class="form-control" id="movieName" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="Language" class="form-label">Languages:</label>
+        <input type="text" class="form-control" id="Language" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="fileType" class="form-label">File Type:</label>
+        <input type="text" class="form-control" id="fileType" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="releaseYear" class="form-label">Release Year:</label>
+        <input type="text" class="form-control" id="releaseYear" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="duration" class="form-label">Duration:</label>
+        <input type="text" class="form-control" id="duration" required>
+      </div>
+
+      <div class="mb-3">
+        <label for="plot" class="form-label">Plot:</label>
+        <textarea class="form-control" id="plot" rows="5" required></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="fileInformation" class="form-label">File Information:</label>
+        <textarea class="form-control" id="fileInformation" rows="10" required></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label for="imdbLink" class="form-label">IMDb Link:</label>
+        <input type="text" class="form-control" id="imdbLink" required>
+      </div>
+
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary">Generate NFO</button>
+      </div>
+    </form>
+
+    <div class="mt-5">
+      <h2 class="text-center">Generated NFO:</h2>
+      <pre id="generatedNFO"></pre>
+
+      <div class="text-center">
+        <button id="saveButton" class="btn btn-success" disabled>Save NFO</button>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5"></script>
+  <script>
+    document.getElementById("nfoForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      var groupName = document.getElementById("groupName").value;
+      var releaseName = document.getElementById("releaseName").value;
+      var movieName = document.getElementById("movieName").value;
+      var Language = document.getElementById("Language").value;
+      var fileType = document.getElementById("fileType").value;
+      var releaseYear = document.getElementById("releaseYear").value;
+      var duration = document.getElementById("duration").value;
+      var plot = document.getElementById("plot").value;
+      var fileInformation = document.getElementById("fileInformation").value;
+      var imdbLink = document.getElementById("imdbLink").value;
+     var mediaInfoLink = "https://mediaarea.net/MediaInfoOnline?url=" + encodeURIComponent(imdbLink);
+     
+	 // Split plot lines in 97 characters 
+      var plotLines = plot.match(/.{1,97}/g);
+      var plotFormatted = plotLines.join("\n        ");
+
+     
+
+      var asciiArt = `
+______________________________________________________________________________________
+                        
+                        
+                                               ${groupName}
+                                             Proudly presents
+                                ${releaseName}
+                        
+______________________________________________________________________________________
+
+        Movie         : ${movieName}
+        Languages     : ${Language}
+        File Type     : ${fileType}
+        Release Year  : ${releaseYear}
+        Duration      : ${duration} 
+        IMDb          : ${imdbLink}       
+          
+
+        Plot:
+        ${plotFormatted}
+        
+        File Information:
+        ${fileInformation}
+_____________________________________________________________________________________
+      `;
+
+      document.getElementById("generatedNFO").textContent = asciiArt;
+      document.getElementById("saveButton").disabled = false;
+    });
+
+    document.getElementById("saveButton").addEventListener("click", function() {
+      var nfoContent = document.getElementById("generatedNFO").textContent;
+      var blob = new Blob([nfoContent], { type: "text/plain;charset=utf-8" });
+      saveAs(blob, "movie.nfo");
+    });
+  </script>
+</body>
+</html>
